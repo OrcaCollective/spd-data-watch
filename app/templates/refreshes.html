@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block title %}Refreshes{% endblock %}
+
+{% block content %}
+  <h3>Refreshes</h3>
+
+  <p>
+    Refreshes indicate when we polled for updates from our data sources.
+  </p>
+
+  <table class="table table-hover">
+    <thead>
+      <tr>
+        <th scope="col">Status</th>
+        <th scope="col">Updates</th>
+        <th scope="col">Time</th>
+      </tr>
+    </thead>
+    <tbody>
+    {% for refresh in refreshes.items %}
+      <tr{% if refresh.status.name == 'FAILED' %} class="table-secondary"{% endif %}>
+        <td>{{ refresh.status.value }}</td>
+        <td>{{ refresh.updates }}</td>
+        <td>{{ refresh.refresh_date }}</td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+
+  <div class="my-3 text-center">
+    <a href="{{ url_for('app.refreshes', page=refreshes.prev_num) }}" class="btn btn-sm btn-outline-dark {% if refreshes.page == 1 %}disabled{% endif %}">
+        &larr;
+    </a>
+  {% for page_num in refreshes.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
+    {% if page_num %}
+      {% if refreshes.page == page_num %}
+      <a href="{{ url_for('app.refreshes', page=page_num) }}" class="btn btn-sm btn-dark">
+        {{ page_num }}
+      </a>
+      {% else %}
+      <a href="{{ url_for('app.refreshes', page=page_num) }}" class="btn btn-sm btn-outline-dark">
+        {{ page_num }}
+      </a>
+      {% endif %}
+    {% else %}
+        ...
+    {% endif %}
+  {% endfor %}
+    <a href="{{ url_for('app.refreshes', page=refreshes.next_num) }}" class="btn btn-sm btn-outline-dark {% if refreshes.page == refreshes.pages %}disabled{% endif %}">
+        &rarr;
+    </a>
+  </div>
+{% endblock %}

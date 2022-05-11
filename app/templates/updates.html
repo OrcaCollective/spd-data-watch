@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block title %}Updates{% endblock %}
+
+{% block content %}
+  <h3>Updates</h3>
+
+  <p>
+    Updates are events we are watching for in our data sources.
+  </p>
+
+  <table class="table table-hover">
+    <thead>
+      <tr>
+        <th scope="col">Case Number</th>
+        <th scope="col">Type</th>
+        <th scope="col">Time</th>
+      </tr>
+    </thead>
+    <tbody>
+    {% for update in updates.items %}
+      <tr>
+        <td><a class="text-secondary" href="/updates/{{ update.id }}">{{ update.case_num }}</a></td>
+        <td>{{ update.type.value }}</td>
+        <td>{{ update.event_date }}</td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+
+  <div class="my-3 text-center">
+    <a href="{{ url_for('app.updates', page=updates.prev_num) }}" class="btn btn-sm btn-outline-dark {% if updates.page == 1 %}disabled{% endif %}">
+        &larr;
+    </a>
+  {% for page_num in updates.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
+    {% if page_num %}
+      {% if updates.page == page_num %}
+      <a href="{{ url_for('app.updates', page=page_num) }}" class="btn btn-sm btn-dark">
+        {{ page_num }}
+      </a>
+      {% else %}
+      <a href="{{ url_for('app.updates', page=page_num) }}" class="btn btn-sm btn-outline-dark">
+        {{ page_num }}
+      </a>
+      {% endif %}
+    {% else %}
+        ...
+    {% endif %}
+  {% endfor %}
+    <a href="{{ url_for('app.updates', page=updates.next_num) }}" class="btn btn-sm btn-outline-dark {% if updates.page == updates.pages %}disabled{% endif %}">
+        &rarr;
+    </a>
+  </div>
+{% endblock %}

@@ -1,0 +1,30 @@
+{% from "update.j2" import render_update %}
+<?xml version="1.0" encoding="utf-8"?>
+
+<feed xmlns="http://www.w3.org/2005/Atom">
+	<title>SPD Data Watch Feed</title>
+  <subtitle>Updates from various SPD open data sources</subtitle>
+  <updated>{{last_update.replace(microsecond=0).isoformat('T')}}Z</updated>
+  
+  <id>https://spd-data-watch.glitch.me/updates.xml</id>
+  
+  {% for update in updates %}
+  <entry>
+    <id>https://spd-data-watch.glitch.me/updates/{{update.id}}</id>
+    <link href="https://spd-data-watch.glitch.me/updates/{{update.id}}" />
+    <author>
+      <name>robot</name>
+    </author>
+    
+    <title>New {{update.type.value}}: {{update.case_num}}</title>
+    <published>{{update.create_date.replace(microsecond=0).isoformat('T')}}Z</published>
+    <updated>{{update.create_date.replace(microsecond=0).isoformat('T')}}Z</updated>
+
+    <content type="xhtml">
+      <div xmlns="http://www.w3.org/1999/xhtml">
+        {{ render_update(update) }}
+      </div>
+    </content>
+  </entry>
+  {% endfor %}
+</feed>

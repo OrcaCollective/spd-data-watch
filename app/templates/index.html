@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block title %}Home{% endblock %}
+
+{% block content %}
+  <form action="/case" method="get">
+    <div class="mb-3">
+      <label for="case-num" class="form-label"><h3>Case Lookup</h3></label>
+      <input class="form-control" id="case-num" name="id" type="text" placeholder="OPA Case Number" />
+    </div>
+
+    <button class="btn btn-dark" type="submit">Lookup</button>
+  </form>
+{% endblock %}

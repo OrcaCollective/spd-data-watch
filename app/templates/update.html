@@ -1,0 +1,7 @@
+{% extends "base.html" %}
+{% from "update.j2" import render_update %}
+{% block title %}Update{% endblock %}
+
+{% block content %}
+  {{ render_update(update) }}
+{% endblock %}

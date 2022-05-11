@@ -1,0 +1,60 @@
+{% macro render_update(update) %}
+  <table class="table table-hover mt-3">
+    <thead>
+      <tr>
+        <th></th>
+        <td>
+          <h3>New {{update.type.value}}</h3>
+        </td>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <th class="text-end" scope="row">Case Number</th>
+        <td>{{update.case_num}}</td>
+      </tr>
+      <tr>
+        <th class="text-end" scope="row">Published</th>
+        <td>{{update.event_date}}</td>
+      </tr>
+      <tr>
+        <th class="text-end" scope="row">Involved officers</th>
+        <td>
+          <ul>
+          {% for officer in update.officers %}
+            <li>
+            {% if officer == 'Unknown' %}
+              Unknown
+            {% else %}
+              <a class="text-secondary" href="https://openoversight.tech-bloc-sea.dev/department/1?badge={{officer}}">
+                {{ find_name(officer) }} ({{officer}})
+              </a>
+            {% endif %}
+            </li>
+          {% endfor %}
+          </ul>
+        </td>
+      </tr>
+      <tr>
+        <th class="text-end" scope="row">Allegations</th>
+        <td>
+          <ul>
+          {% for allegation in update.allegations %}
+            <li>{{allegation}}</li>
+          {% endfor %}
+          </ul>
+        </td>
+      </tr>
+      <tr>
+        <th class="text-end" scope="row">Disposition</th>
+        <td>{{update.disposition}}</td>
+      </tr>
+    {% if update.type.name == 'CCS_PUBLISHED' %}
+      <tr>
+        <th class="text-end" scope="row">Link</th>
+        <td><a class="text-secondary" href="{{update.url}}">{{update.url}}</a></td>
+      </tr>
+    {% endif %}
+    </tbody>
+  </table>
+{% endmacro %}
