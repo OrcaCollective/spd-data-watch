@@ -55,7 +55,7 @@ def find_case(case_num: str) -> CaseResult:
 
     return CaseResult(
         case_num,
-        officers,
+        list(officers),
         list(allegations),
         "".join(disposition) if len(disposition) < 2 else "Partially Sustained",
     )
