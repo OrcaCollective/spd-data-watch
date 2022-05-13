@@ -1,5 +1,6 @@
 Flask
 Flask-SQLAlchemy
 gunicorn
-requests
+pre-commit
 python-dateutil
+requests
