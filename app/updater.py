@@ -191,7 +191,7 @@ class ClosedInvestigationUpdater(Updater):
         update.event_date = parser.parse(
             validate(rows[0]["investigation_end_date"], Regexps.TIMESTAMP, None)
         )
-        update.officers = [find_serial(officer) for officer in officers]
+        update.officers = officers
         update.type = self.get_update_type()
 
         if len(disposition) == 1:

@@ -26,8 +26,8 @@ def create_app():
 
         app.register_blueprint(views)
 
-        from app.lookup import find_name
+        from app.lookup import find_name, find_serial
 
-        app.jinja_env.globals.update(find_name=find_name)
+        app.jinja_env.globals.update(find_name=find_name, find_serial=find_serial)
 
         return app

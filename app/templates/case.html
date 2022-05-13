@@ -29,12 +29,13 @@
         <td>
           <ul>
           {% for officer in case.officers %}
-            {% if officer == "Unknown" %}
+            {% set serial = find_serial(officer) %}
+            {% if serial == "Unknown" %}
             <li>Unknown</li>
             {% else %}
             <li>
-              <a class="text-secondary" href="https://openoversight.tech-bloc-sea.dev/department/1?badge={{officer}}">
-                {{ find_name(officer) }} ({{officer}})
+              <a class="text-secondary" href="https://openoversight.tech-bloc-sea.dev/department/1?badge={{serial}}">
+                {{ find_name(serial) }} ({{serial}})
               </a>
             </li>
             {% endif %}

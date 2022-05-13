@@ -55,7 +55,7 @@ def find_case(case_num: str) -> CaseResult:
 
     return CaseResult(
         case_num,
-        [find_serial(officer) for officer in officers],
+        officers,
         list(allegations),
         "".join(disposition) if len(disposition) < 2 else "Partially Sustained",
     )
