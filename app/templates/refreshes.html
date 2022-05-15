@@ -9,6 +9,11 @@
     Refreshes indicate when we polled for updates from our data sources.
   </p>
 
+  <form method="get">
+      <input id="show_all" name="show_all" onclick="this.form.submit()" type="checkbox" {% if show_all %}checked {% endif %} />
+      <label for="show_all">Include refreshes with zero updates</label>
+  </form>
+
   <table class="table table-hover">
     <thead>
       <tr>
@@ -29,17 +34,17 @@
   </table>
 
   <div class="my-3 text-center">
-    <a href="{{ url_for('app.refreshes', page=refreshes.prev_num) }}" class="btn btn-sm btn-outline-dark {% if refreshes.page == 1 %}disabled{% endif %}">
+    <a href="{{ url_for('app.refreshes', page=refreshes.prev_num, show_all=show_all) }}" class="btn btn-sm btn-outline-dark {% if refreshes.page == 1 %}disabled{% endif %}">
         &larr;
     </a>
   {% for page_num in refreshes.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
     {% if page_num %}
       {% if refreshes.page == page_num %}
-      <a href="{{ url_for('app.refreshes', page=page_num) }}" class="btn btn-sm btn-dark">
+      <a href="{{ url_for('app.refreshes', page=page_num, show_all=show_all) }}" class="btn btn-sm btn-dark">
         {{ page_num }}
       </a>
       {% else %}
-      <a href="{{ url_for('app.refreshes', page=page_num) }}" class="btn btn-sm btn-outline-dark">
+      <a href="{{ url_for('app.refreshes', page=page_num, show_all=show_all) }}" class="btn btn-sm btn-outline-dark">
         {{ page_num }}
       </a>
       {% endif %}
@@ -47,7 +52,7 @@
         ...
     {% endif %}
   {% endfor %}
-    <a href="{{ url_for('app.refreshes', page=refreshes.next_num) }}" class="btn btn-sm btn-outline-dark {% if refreshes.page == refreshes.pages %}disabled{% endif %}">
+    <a href="{{ url_for('app.refreshes', page=refreshes.next_num, show_all=show_all) }}" class="btn btn-sm btn-outline-dark {% if refreshes.page == refreshes.pages %}disabled{% endif %}">
         &rarr;
     </a>
   </div>

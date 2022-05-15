@@ -30,10 +30,16 @@ def index():
 @views.route("/refreshes")
 def refreshes():
     page = request.args.get("page", 1, type=int)
-    refreshes = Refresh.query.order_by(Refresh.refresh_date.desc()).paginate(
+    refreshes = Refresh.query.order_by(Refresh.refresh_date.desc())
+
+    show_all = request.args.get("show_all")
+    if not show_all:
+        refreshes = refreshes.filter(Refresh.updates > 0)
+
+    refreshes = refreshes.paginate(
         page=page, per_page=current_app.config["ITEMS_PER_PAGE"]
     )
-    return render_template("refreshes.html", refreshes=refreshes)
+    return render_template("refreshes.html", refreshes=refreshes, show_all=show_all)
 
 
 @views.route("/refreshes.json")
