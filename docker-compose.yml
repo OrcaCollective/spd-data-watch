@@ -1,0 +1,18 @@
+version: "3"
+
+services:
+    app:
+        restart: always
+        image: ghcr.io/orcacollective/spd-data-watch:${DOCKER_TAG:-latest}
+        environment:
+            FLASK_APP: app
+            FLASK_ENV: production
+            SQLITE_DB_DIR: /app/
+            LOGGING_DIR: /var/log/
+        env_file:
+            - .env
+        volumes:
+            - ./db.sqlite3:/app/db.sqlite3
+        command: gunicorn --workers=2 --bind 0.0.0.0:3048 wsgi:app
+        ports:
+            - "3048:3048"
