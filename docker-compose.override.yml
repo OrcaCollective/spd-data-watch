@@ -6,6 +6,7 @@ services:
         environment:
             FLASK_ENV: development
             FLASK_DEBUG: 1
-        command: python3 run.py
+            FLASK_APP: run:flask
+        command: flask run --host=0.0.0.0 --port=3048
         volumes:
             - ./app:/app/app
