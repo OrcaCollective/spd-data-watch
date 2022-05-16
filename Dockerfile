@@ -12,4 +12,3 @@ RUN pip install -r requirements.txt
 
 COPY run.py wsgi.py ./
 COPY app app
-
