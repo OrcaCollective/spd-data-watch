@@ -13,6 +13,6 @@ services:
             - .env
         volumes:
             - ./db.sqlite3:/app/db.sqlite3
-        command: gunicorn --workers=2 --bind 0.0.0.0:3048 wsgi:app
+        command: gunicorn --workers=2 --bind 0.0.0.0:3000 wsgi:app
         ports:
-            - "3048:3048"
+            - "3048:3000"
