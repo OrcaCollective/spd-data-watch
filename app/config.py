@@ -1,12 +1,13 @@
 import os
 from datetime import timedelta
+from pathlib import Path
 
 
-basedir = os.path.abspath(os.path.dirname(__file__))
+_basedir = Path(__file__).parent.absolute()
 
 
 class Config:
-    SQLITE_DB_DIR = os.path.join(basedir, "../.data")
+    SQLITE_DB_DIR = os.environ.get("SQLITE_DB_DIR", _basedir.parent / ".data")
     SQLALCHEMY_DATABASE_URI = "sqlite:///" + os.path.join(SQLITE_DB_DIR, "db.sqlite3")
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 

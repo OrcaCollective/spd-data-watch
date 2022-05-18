@@ -1,8 +1,13 @@
 import logging
+import os
+from pathlib import Path
 
 from flask import Flask
 
 from app.config import Config
+
+
+LOGGING_DIR = Path(os.environ.get("LOGGING_DIR", ".data"))
 
 
 def create_app():
@@ -13,7 +18,7 @@ def create_app():
     app.jinja_env.trim_blocks = True
     app.jinja_env.lstrip_blocks = True
 
-    logging.basicConfig(filename=".data/application.log", level=logging.INFO)
+    logging.basicConfig(filename=LOGGING_DIR / "application.log", level=logging.INFO)
 
     with app.app_context():
         from .models import db
