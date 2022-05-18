@@ -11,6 +11,8 @@ class Config:
     SQLALCHEMY_DATABASE_URI = "sqlite:///" + os.path.join(SQLITE_DB_DIR, "db.sqlite3")
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
+    LOGGING_DIR = Path(os.environ.get("LOGGING_DIR", ".data"))
+
     REFRESH_INTERVAL = timedelta(hours=1)
     RETRY_INTERVAL = timedelta(minutes=10)
 
