@@ -7,6 +7,8 @@ services:
             FLASK_ENV: development
             FLASK_DEBUG: 1
             FLASK_APP: run:flask
-        command: flask run --host=0.0.0.0 --port=3048
+        command: flask run --host=0.0.0.0 --port=3000
         volumes:
             - ./app:/app/app
+        ports:
+            - "3000:3000"
