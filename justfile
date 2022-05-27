@@ -10,8 +10,12 @@ default:
     @just -lu
 
 # Build all containers
-build:
+build: dotenv
     {{ DC }} build
+
+# Create a dummy .env file
+dotenv:
+    @([ ! -f .env ] && touch .env) || true
 
 # Print the docker-compose config
 config:
