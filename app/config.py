@@ -18,8 +18,8 @@ class BaseConfig:
 
     ITEMS_PER_PAGE = 25
 
-    ROSTER_CSV_URL = os.environ["ROSTER_CSV_URL"]
-    UID_CSV_URL = os.environ["UID_CSV_URL"]
+    ROSTER_CSV_URL = os.environ.get("ROSTER_CSV_URL")
+    UID_CSV_URL = os.environ.get("UID_CSV_URL")
 
 
 class TestConfig(BaseConfig):
