@@ -241,7 +241,11 @@ def do_update(last_refresh, now):
             # Set high water mark
             if len(updates):
                 latest_event_date = max([update.event_date for update in updates])
-                setattr(refresh, update_attr, latest_event_date)
+                setattr(
+                    refresh,
+                    update_attr,
+                    max(latest_event_date, getattr(last_refresh, update_attr)),
+                )
             else:
                 setattr(refresh, update_attr, getattr(last_refresh, update_attr))
 
@@ -252,18 +256,20 @@ def do_update(last_refresh, now):
 
         refresh.status = RefreshStatus.COMPLETED
         refresh.updates = update_count
-    except Exception as e:
+    except Exception:
         refresh.status = RefreshStatus.FAILED
-        current_app.logger.error("Update failed", e)
+        current_app.logger.exception("Update failed")
 
     db.session.add(refresh)
     db.session.commit()
 
 
-def update():
+def update(now=None):
     """Call do_update if an update is needed"""
     last_refresh = Refresh.last_refresh()
-    now = datetime.now()
+
+    if not now:
+        now = datetime.now()
 
     if last_refresh:
         if (
