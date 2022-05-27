@@ -12,7 +12,7 @@ jobs:
         with:
           python-version: 3.9
       - name: Install Dependencies
-        run: pip install -r requirements.txt
+        run: pip install -r requirements-dev.txt
       - name: Run pre-commit checks
         run: pre-commit run --all-files
 
