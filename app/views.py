@@ -93,7 +93,10 @@ def updates_atom():
 
     resp = make_response(
         render_template(
-            "updates.xml.j2", updates=updates, last_update=last_refresh.refresh_date
+            "updates.xml.j2",
+            updates=updates,
+            last_update=last_refresh.refresh_date,
+            domain=current_app.config["DOMAIN"],
         )
     )
     resp.headers["Content-Type"] = "application/atom+xml; charset=utf-8"
