@@ -6,12 +6,12 @@
   <subtitle>Updates from various SPD open data sources</subtitle>
   <updated>{{last_update.replace(microsecond=0).isoformat('T')}}Z</updated>
 
-  <id>https://spd-data-watch.glitch.me/updates.xml</id>
+  <id>{{domain}}/updates.xml</id>
 
   {% for update in updates %}
   <entry>
-    <id>https://spd-data-watch.glitch.me/updates/{{update.id}}</id>
-    <link href="https://spd-data-watch.glitch.me/updates/{{update.id}}" />
+    <id>{{domain}}/updates/{{update.id}}</id>
+    <link href="{{domain}}/updates/{{update.id}}" />
     <author>
       <name>robot</name>
     </author>
