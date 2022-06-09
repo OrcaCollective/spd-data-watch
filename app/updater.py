@@ -7,7 +7,7 @@ import requests
 from dateutil import parser
 from flask import current_app
 
-from app.lookup import find_case, find_serial
+from app.lookup import find_case
 from app.models import Refresh, RefreshStatus, Update, UpdateType, db
 from app.utils import Regexps, validate
 
@@ -176,11 +176,7 @@ class ClosedInvestigationUpdater(Updater):
         disposition = set()
 
         for row in rows:
-            officers.add(
-                find_serial(
-                    validate(row["named_employee_id"], Regexps.SERIAL, "Unknown")
-                )
-            )
+            officers.add(validate(row["named_employee_id"], Regexps.SERIAL, "Unknown"))
             allegations.add(validate(row["allegation"], Regexps.STRING, "Unknown"))
             disposition.add(validate(row["disposition"], Regexps.STRING, "Unknown"))
 
