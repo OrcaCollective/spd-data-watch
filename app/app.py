@@ -2,13 +2,13 @@ import logging
 
 from flask import Flask
 
-from app.config import Config
+from app.config import config
 
 
-def create_app():
+def create_app(config_name="default"):
     app = Flask(__name__, static_folder="static", template_folder="templates")
 
-    app.config.from_object(Config)
+    app.config.from_object(config[config_name])
 
     app.jinja_env.trim_blocks = True
     app.jinja_env.lstrip_blocks = True

@@ -3,28 +3,31 @@ from dataclasses import dataclass
 from typing import Dict, List
 
 import requests
-from flask import current_app
+from flask import current_app, g
 
 from app.utils import Regexps, validate
 
 
-def csv_to_dict(url: str) -> Dict[str, str]:
+def csv_to_dict(name: str, url: str) -> Dict[str, str]:
     """Create a dict from a csv using the first column as the key and second column as the value."""
+    if not url:
+        current_app.logger.error(f"{name} csv not found, all lookups will fail.")
+        return {}
     content = requests.get(url).text
     reader = csv.reader(content.strip().split("\n"))
     return {serial: name for serial, name, *extra in reader}
 
 
-uid_map = csv_to_dict(current_app.config["UID_CSV_URL"])
-roster_map = csv_to_dict(current_app.config["ROSTER_CSV_URL"])
-
-
 def find_serial(uid: str) -> str:
-    return uid_map.get(uid, "Unknown")
+    if "uid_map" not in g:
+        g.uid_map = csv_to_dict("uid", current_app.config.get("UID_CSV_URL"))
+    return g.uid_map.get(uid, "Unknown")
 
 
 def find_name(serial: str) -> str:
-    return roster_map.get(serial, "Unknown")
+    if "roster_map" not in g:
+        g.roster_map = csv_to_dict("roster", current_app.config.get("ROSTER_CSV_URL"))
+    return g.roster_map.get(serial, "Unknown")
 
 
 @dataclass

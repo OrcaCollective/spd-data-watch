@@ -12,3 +12,9 @@ RUN pip install -r requirements.txt
 
 COPY run.py wsgi.py ./
 COPY app app
+
+# split this into a development target eventually
+COPY requirements-dev.txt .
+RUN pip install -r requirements-dev.txt
+COPY tests tests
+COPY pytest.ini pytest.ini

@@ -12,6 +12,18 @@ jobs:
         with:
           python-version: 3.9
       - name: Install Dependencies
-        run: pip install -r requirements.txt
+        run: pip install -r requirements-dev.txt
       - name: Run pre-commit checks
         run: pre-commit run --all-files
+
+  tests:
+    runs-on: ubuntu-latest
+    needs: pre-commit
+    steps:
+      - uses: actions/checkout@v2
+      - uses: extractions/setup-just@v1
+      - name: Run tests
+        run: |
+          just build
+          just test
+          just test-acceptance
