@@ -18,25 +18,6 @@
         <td>{{update.event_date}}</td>
       </tr>
       <tr>
-        <th class="text-end" scope="row">Involved officers</th>
-        <td>
-          <ul>
-          {% for officer in update.officers %}
-            {% set serial = find_serial(officer) %}
-            <li>
-            {% if serial == 'Unknown' %}
-              Unknown
-            {% else %}
-              <a class="text-secondary" href="https://openoversight.tech-bloc-sea.dev/department/1?badge={{serial}}">
-                {{ find_name(serial) }} ({{serial}})
-              </a>
-            {% endif %}
-            </li>
-          {% endfor %}
-          </ul>
-        </td>
-      </tr>
-      <tr>
         <th class="text-end" scope="row">Allegations</th>
         <td>
           <ul>

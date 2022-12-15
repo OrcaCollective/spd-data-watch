@@ -112,7 +112,6 @@ def test_do_update_failed(flask, db):
 @pytest.mark.acceptance
 @pytest.mark.parametrize("updater", [updater for (updater, _) in app.updater.updaters])
 def test_updater(flask, db, updater):
-    print(type(updater))
     refresh_date = datetime.now()
-    updates = updater.update(refresh_date - timedelta(weeks=3), refresh_date)
+    updates = updater.update(refresh_date - timedelta(weeks=10), refresh_date)
     assert len(updates) > 0
