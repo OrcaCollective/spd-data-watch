@@ -34,7 +34,7 @@ class ClosedCaseSummaryUpdater(Updater):
         return UpdateType.CCS_PUBLISHED
 
     def get_update_url(self, last_update_dt) -> str:
-        return f"https://data.seattle.gov/api/id/m33m-84uk.json?$query=select * where (`posted_date` > '{last_update_dt.isoformat()}') order by `posted_date` desc"
+        return f"https://data.seattle.gov/api/id/m33m-84uk.json?$query=select * where (`posted_date` > '{last_update_dt.date().isoformat()}') order by `posted_date` desc"
 
     def process_case(self, case, update_dt) -> Update:
         # Response:
@@ -66,11 +66,11 @@ class ClosedCaseSummaryUpdater(Updater):
 
         result = find_case(update.case_num)
         if result:
-            update.officers = result.officers
             update.allegations = result.allegations
         else:
-            update.officers = []
             update.allegations = []
+
+        update.officers = []
 
         return update
 
@@ -83,52 +83,77 @@ class NewComplaintUpdater(Updater):
         return UpdateType.COMPLAINT_FILED
 
     def get_update_url(self, last_update_dt) -> str:
-        return f"https://data.seattle.gov/api/id/pafy-bfmu.json?$query=select * where ((`task_creation_date` > '{last_update_dt.isoformat()}') and (upper(`status_description`) = upper('OPA Intake'))) order by `task_creation_date` desc"
+        return f"https://data.seattle.gov/api/id/hyay-5x7b.json?$query=select * where (`received_date` > '{last_update_dt.date().isoformat()}') order by `received_date` desc"
 
-    def process_complaint(self, complaint, update_dt) -> Update:
+    def process_complaint(self, case_num, rows, update_dt) -> Update:
         # Response:
         # [
         #   {
-        #     "opa_case_number":"2022OPA-0134",
-        #     "status":"Done",
-        #     "status_description":"OPA Intake",
-        #     "due_date":"2022-05-20T00:00:00.000",
-        #     "completed_date":"2022-05-04T00:00:00.000",
-        #     "task_creation_date":"2022-05-03T00:00:00.000",
-        #     "due_date_2":"2022-05-20T00:00:00.000",
-        #     "completed_date_2":"2022-05-04T00:00:00.000",
-        #     "task_creation_date_2":"2022-05-03T00:00:00.000",
-        #     "currentstatus":"Done"
+        #     "unique_id":"65217-98589-69722-1595-26426",
+        #     "file_number":"2021OPA-0452",
+        #     "incident_number":"65217",
+        #     "occurred_date":"2021-10-03T00:00:00.000",
+        #     "received_date":"2021-10-04T00:00:00.000",
+        #     "incident_precinct":"-",
+        #     "incident_beat":"-",
+        #     "source":"SPD - Forwarded",
+        #     "incident_type":"OPA Investigation",
+        #     "allegation":"Professionalism",
+        #     "disposition":"-",
+        #     "discipline":"-",
+        #     "named_employee_id":"1595",
+        #     "named_employee_race":"Asian",
+        #     "named_employee_gender":"M",
+        #     "named_employee_age_at":"38",
+        #     "named_employee_title_at":"ACTING POLICE SERGEANT",
+        #     "named_employee_squad_at":"SOUTH PCT 3RD W - R/S RELIEF",
+        #     "complainant_number":"26426",
+        #     "complainant_gender":"Male",
+        #     "complainant_race":"White",
+        #     "complainant_age_complaint":"34",
+        #     "case_status":"Active",
+        #     "finding":"-",
+        #     "investigation_begin_date":"2021-10-03T00:00:00.000",
+        #     "investigation_end_date":"2022-05-01T00:00:00.000"
         #   },
         #   ...
+        # ]
+        officers = set()
+        allegations = set()
+        disposition = set()
+
+        for row in rows:
+            allegations.add(validate(row["allegation"], Regexps.STRING, "Unknown"))
+            disposition.add(validate(row["disposition"], Regexps.STRING, "Unknown"))
+
         update = Update()
-        update.case_num = validate(
-            complaint["opa_case_number"], Regexps.CASE_NUM, "Invalid case number"
-        )
+        update.allegations = list(allegations)
+        update.case_num = validate(case_num, Regexps.CASE_NUM, "Invalid case number")
         update.create_date = update_dt
         update.event_date = parser.parse(
-            validate(
-                complaint["task_creation_date"],
-                Regexps.TIMESTAMP,
-                "1970-01-01T00:00:00",
-            )
+            validate(rows[0]["received_date"], Regexps.TIMESTAMP, None)
         )
+        update.officers = list(officers)
         update.type = self.get_update_type()
 
-        result = find_case(update.case_num)
-        if result:
-            update.allegations = result.allegations
-            update.disposition = result.disposition
-            update.officers = result.officers
+        if len(disposition) == 1:
+            update.disposition = "".join(disposition)
         else:
-            update.allegations = []
-            update.disposition = ""
-            update.officers = []
+            update.disposition = "Partially Sustained"
 
         return update
 
     def process(self, data, update_dt) -> List[Update]:
-        return [self.process_complaint(complaint, update_dt) for complaint in data]
+        # Since this dataset lists one allegation per row, we need to aggregate by case number
+        def key_by_case(d):
+            return d["file_number"]
+
+        data = sorted(data, key=key_by_case)
+        cases = {k: list(v) for k, v in itertools.groupby(data, key=key_by_case)}
+        return [
+            self.process_complaint(case_num, rows, update_dt)
+            for case_num, rows in cases.items()
+        ]
 
 
 class ClosedInvestigationUpdater(Updater):
@@ -136,7 +161,7 @@ class ClosedInvestigationUpdater(Updater):
         return UpdateType.INVESTIGATION_CLOSED
 
     def get_update_url(self, last_update_dt) -> str:
-        return f"https://data.seattle.gov/api/id/99yi-dthu.json?$query=select * where (`investigation_end_date` > '{last_update_dt.isoformat()}') order by `investigation_end_date` desc"
+        return f"https://data.seattle.gov/api/id/hyay-5x7b.json?$query=select * where (`investigation_end_date` > '{last_update_dt.date().isoformat()}') order by `investigation_end_date` desc"
 
     def process_case(self, case_num, rows, update_dt) -> Update:
         # Response:
@@ -176,7 +201,6 @@ class ClosedInvestigationUpdater(Updater):
         disposition = set()
 
         for row in rows:
-            officers.add(validate(row["named_employee_id"], Regexps.SERIAL, "Unknown"))
             allegations.add(validate(row["allegation"], Regexps.STRING, "Unknown"))
             disposition.add(validate(row["disposition"], Regexps.STRING, "Unknown"))
 
