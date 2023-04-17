@@ -1,6 +1,6 @@
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.0.1
+    rev: v4.4.0
     hooks:
       - id: trailing-whitespace
       - id: check-docstring-first
@@ -23,7 +23,7 @@ repos:
       - id: requirements-txt-fixer
 
   - repo: https://github.com/pre-commit/pygrep-hooks
-    rev: v1.7.0
+    rev: v1.10.0
     hooks:
       - id: python-check-blanket-noqa
       - id: python-check-mock-methods
@@ -31,7 +31,7 @@ repos:
       - id: python-no-log-warn
 
   - repo: https://github.com/PyCQA/isort
-    rev: 5.9.1
+    rev: 5.12.0
     hooks:
       - id: isort
         name: Run isort to sort imports
@@ -48,7 +48,7 @@ repos:
           - --line-length=88
 
   - repo: https://github.com/pycqa/pydocstyle
-    rev: 5.1.1
+    rev: 6.3.0
     hooks:
       - id: pydocstyle
         name: Run pydocstyle
@@ -73,7 +73,7 @@ repos:
         files: \.py$
 
   - repo: https://github.com/pycqa/flake8
-    rev: 3.9.2
+    rev: 6.0.0
     hooks:
         - id: flake8
           args:
@@ -81,7 +81,7 @@ repos:
             - --select=B,C,E,F,W,T4,B9
 
   - repo: https://github.com/ambv/black
-    rev: 22.3.0
+    rev: 23.3.0
     hooks:
         - id: black
           args:
